@@ -1,6 +1,8 @@
 # Dijkstra_grid
 ### Overview
 Given a graph and group of source nodes, compute the shortest distances between the source nodes via Dijkstra.
+<img src="problem_2D.jpg" width="700"/>
+
 The example text files include:
 
 - 'dijkstraGRAPHin.txt': the graph, with format:
