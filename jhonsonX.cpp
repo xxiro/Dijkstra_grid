@@ -10,10 +10,11 @@
 #include <boost/config.hpp>
 #include <iostream>
 #include <fstream>
+#include <vector>
 
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/dijkstra_shortest_paths.hpp>
+#include <boost/graph/johnson_all_pairs_shortest.hpp>
 #include <boost/property_map/property_map.hpp>
 
 #include <typeinfo>
@@ -236,15 +237,15 @@ int main(int argc, char* argv[])
     int* sb_pairs_weight = new int[source_num];
     int closest_b, closest_b_weight;
 
-    // Main Dijkstra algorithm starts below, where single-source-all-pair dijkstra is looped over all sources.
-    // We are only interested in the edge weights between the sources.
+    // First compute all to all paths with Jhonson's, then extract only distances from sources to sources
+    std::vector<std::vector<int>> output_distance_matrix (num_vertices(g),std::vector<int>(num_vertices(g),0));
+    boost::johnson_all_pairs_shortest_paths(g, output_distance_matrix);
+
     for (ii=0; ii<source_num; ii++)
     {
 
-        std::vector< int > d(num_vertices(g));
         vertex_descriptor s = vertex(sources[ii], g);
-
-        dijkstra_shortest_paths(g, s,distance_map(&d[0]));
+        const std::vector<int>& d = output_distance_matrix[s];
 
         // After the dijkstra for source s, all distances to s is saved in d.
         // The following loop find the distance from s to other source nodes, save them to dijkstra_weights.
